@@ -1,0 +1,37 @@
+﻿<!--Razor Syntax C# inside view-->
+<h1>My first View Hello World :)</h1>
+<style>
+    h1{
+        background-color:red;
+        color:yellow;
+    }
+</style>
+
+<script>
+console.log("hello");
+</script>
+<!--Using Razor Syntax :razor engin render to html-->
+<!-- 1) Block of C# code-->
+@{
+    int x = 10; //10
+    int y = x+10;//20
+}
+<!--Inline C# Coded render value-->
+<h3>@(x+y)</h3>
+
+<!--server Conddition statment if switch-->
+@if(x>y){
+    <h2>X =@x greater Than Y =@y</h2>
+}
+else 
+{
+    <h2>X =@x Less Than Y =@y</h2>
+}
+
+<!--Looping Statment for while ,do while ,foreach-->
+<ul>
+    @for (int i = 1; i < 10; i++)
+    {
+        <li>@i</li>
+    }
+</ul>

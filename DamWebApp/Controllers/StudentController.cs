@@ -14,5 +14,13 @@ namespace DamWebApp.Controllers
             return View("ShowAll",stdList);//send List<student
             //View NAme: ShowAll //Views/Studnt/ShowAll.cs
         }
+
+        //Student/Details/1
+        //Student/Details?id=1
+        public IActionResult Details(int id)
+        {
+            Student stdModel = studentBl.GetByID(id);
+            return View("Details", stdModel);//View Ddetails ,Model ==Student
+        }
     }
 }

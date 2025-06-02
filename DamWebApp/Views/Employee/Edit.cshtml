@@ -10,6 +10,30 @@
 <form method="post" action="/Employee/SaveEdit/@Model.Id">
     @* <input type="hidden" name="Id" value="@Model.Id" /> *@
     <div>
+        <!--Tag Helper-->
+        <label asp-for="Email"></label>
+        <input class="form form-control" asp-for="Email" />
+
+
+        <!--Pure HTML-->
+        @* <label>Email</label>
+        <input class="form form-control" type="text" id="Email" name="Email" value="@Model.Email" /> *@
+        <!--Pure C# using HTML Helper-->
+        @* @Html.Label("Email")
+        @Html.TextBox("Email") *@
+        @* @Html.LabelFor(e=>e.Email) *@
+        @* @Html.TextBoxFor(e => e.Email, new { style = "color:red",@class="form form-control"}) *@
+        @* @Html.EditorFor(e=>e.Email) *@
+        @* <input name="Email" id="Email" value="@Model?.Email" type=""/>
+        string text
+        int    number
+        bool   check *@
+    </div>
+
+    
+    
+    
+    <div>
         <label>Name</label>
         <input class="form form-control" type="text" id="Name" name="Name" value="@Model.Name" />
     </div>
@@ -21,10 +45,7 @@
         <label>Image URL</label>
         <input class="form form-control" type="text" id="ImageURL" name="ImageURL" value="@Model.ImageURL" />
     </div>
-    <div>
-        <label>Email</label>
-        <input class="form form-control" type="text" id="Email" name="Email" value="@Model.Email" />
-    </div>
+    
     <div>
         <h1>@Model.DepartmentId</h1>
         <label>Department</label>
@@ -49,3 +70,22 @@
     <input type="submit" value="Save" class="btn btn-success" />
 </form>
 <a href="/Employee/Index">Back To List</a>
+<br />
+@Html.ActionLink("Back To List" ,"Index","Employee")
+<br />
+<a asp-action="Index" asp-controller="Employee">Back To List</a>
+
+<hr />
+<a href="/Employee/Details/@Model.Id?name=@Model.Name">Details</a>
+<br />
+@Html.ActionLink("Details Link", "Details", "Employee",new{id=Model.Id,name=Model.Name})
+<br />
+<a asp-action="Details" asp-controller="Employee"
+   asp-route-id="@Model.Id" asp-route-name="@Model.Name" asp-route-age="12">Details</a>
+
+
+
+
+
+
+

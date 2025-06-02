@@ -1,4 +1,5 @@
 ﻿using DamWebApp.Models;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DamWebApp.ViewModel
@@ -11,7 +12,9 @@ namespace DamWebApp.ViewModel
         public string Name { get; set; }
 
         public int Salary { get; set; }
-
+        //Employee Email
+        [Display(Name ="Employee Name")]
+        [DataType(DataType.EmailAddress)]
         public string? Email { get; set; }
 
         public string? ImageURL { get; set; }
@@ -23,3 +26,15 @@ namespace DamWebApp.ViewModel
 
     }
 }
+
+/*
+ phone
+ datetie
+ image
+ email
+ password
+ number
+ */
+
+
+

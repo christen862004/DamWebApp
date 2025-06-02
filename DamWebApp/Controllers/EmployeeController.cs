@@ -13,6 +13,29 @@ namespace DamWebApp.Controllers
             List<Employee> EmpList= context.Employees.ToList();
             return View("Index",EmpList);
         }
+        #region New
+        public IActionResult New()//oprn view
+        {
+            
+            ViewBag.DeptList = context.Departments.ToList();//convert to IEnumerable<selectListITem>
+            
+            return View("New");
+        }
+        
+        
+        [HttpPost]//handel submit event 
+        //handel only internal req not handel external req
+        [ValidateAntiForgeryToken]//request.form["_reqquestVerificationToke"]
+        public IActionResult SaveNew(Employee empFromReq) {
+            if(empFromReq.Name!= null) {
+                context.Employees.Add(empFromReq);
+                context.SaveChanges();
+                return RedirectToAction("Index","Employee");
+            }
+            ViewBag.DeptList = context.Departments.ToList();
+            return View("New", empFromReq);
+        }
+        #endregion
 
         #region Edit
         ///Employee/Edit/@item.Id"
@@ -43,6 +66,7 @@ namespace DamWebApp.Controllers
         //public IActionResult SaveEdit(Employee EmpFromReq)
         //public IActionResult SaveEdit(int id,string name,string email,...)
         {
+            
             if(EmpFromReq.Name!=null && EmpFromReq.Salary > 7000)
             {
                 //get old ref
@@ -68,7 +92,7 @@ namespace DamWebApp.Controllers
 
 
         #region DEtails
-        public IActionResult Details(int id)
+        public IActionResult Details(int id,string name)
         {
             //-------------Send More than one infor
             string msg = "Hello";

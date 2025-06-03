@@ -22,7 +22,7 @@ namespace DamWebApp.ViewModel
         
         public int DepartmentId { get; set; }
         
-        public List<Department> DeptList { get; set; }
+        public List<Department>? DeptList { get; set; }
 
     }
 }

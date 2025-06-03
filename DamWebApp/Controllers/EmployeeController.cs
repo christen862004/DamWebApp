@@ -13,64 +13,83 @@ namespace DamWebApp.Controllers
             List<Employee> EmpList= context.Employees.ToList();
             return View("Index",EmpList);
         }
+
+        public IActionResult CheckSalary(int Salary,string Name)
+        {
+            if (Salary > 6000)
+                return Json(true);
+            else 
+                return Json(false);
+        }
         #region New
         public IActionResult New()//oprn view
         {
-            
+            //declare ViewModel (fill Lists)
             ViewBag.DeptList = context.Departments.ToList();//convert to IEnumerable<selectListITem>
             
             return View("New");
         }
-        
-        
-        [HttpPost]//handel submit event 
-        //handel only internal req not handel external req
-        [ValidateAntiForgeryToken]//request.form["_reqquestVerificationToke"]
+        //Employee/SaveNEw 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SaveNew(Employee empFromReq) {
-            if(empFromReq.Name!= null) {
-                context.Employees.Add(empFromReq);
-                context.SaveChanges();
-                return RedirectToAction("Index","Employee");
+            if (ModelState.IsValid==true)//server side Validation
+            {
+                try
+                {
+                    //mapping Employee emp=new Employee()
+                    context.Employees.Add(empFromReq);//Add
+                    context.SaveChanges();//throw exeption
+                    return RedirectToAction("Index", "Employee");//end of Function
+                }catch(Exception ex)
+                {
+                    //send exception text Ddiv
+                    //ModelState.AddModelError("DepartmentId", "Please Select Department");
+                    ModelState.AddModelError("ayKey",ex.InnerException.Message);
+                }
             }
+
             ViewBag.DeptList = context.Departments.ToList();
+            //empFromReq.DeptList= context.Departments.ToList();
             return View("New", empFromReq);
+
         }
         #endregion
 
         #region Edit
-        ///Employee/Edit/@item.Id"
+        ///Employee/Edit/109"
         public IActionResult Edit(int id)//open form 100% MEthod Get
         {
             //Collect dta
             Employee empFromDB= context.Employees.FirstOrDefault(e=>e.Id == id);
-            List<Department> DeptList1=context.Departments.ToList();
-            //ddecalare vM
-            EmployeeWithDEptListViewModel empVM = new();
-            //Mapping
-            empVM.Id = empFromDB.Id;
-            empVM.Name = empFromDB.Name;
-            empVM.Email = empFromDB.Email;
-            empVM.ImageURL = empFromDB.ImageURL;
-            empVM.Salary = empFromDB.Salary;
-            empVM.DepartmentId = empFromDB.DepartmentId;
-            empVM.DeptList = DeptList1;
-            //return VM
-            return View("Edit",empVM);//Model=EmployeeWithDEptListViewModel
+            if (empFromDB != null)
+            {
+                List<Department> DeptList1 = context.Departments.ToList();
+                //ddecalare vM
+                EmployeeWithDEptListViewModel empVM = new();
+                //Mapping
+                empVM.Id = empFromDB.Id;
+                empVM.Name = empFromDB.Name;
+                empVM.Email = empFromDB.Email;
+                empVM.ImageURL = empFromDB.ImageURL;
+                empVM.Salary = empFromDB.Salary;
+                empVM.DepartmentId = empFromDB.DepartmentId;
+                empVM.DeptList = DeptList1;
+                //return VM
+                return View("Edit", empVM);//Model=EmployeeWithDEptListViewModel
+            }
+            return BadRequest();
         }
-        /*Post : /Employee/SaveEdit/1
-    form {Name,Salary,ImageURL,Email,DepartmentID
-    }
-*/
+
         [HttpPost]
         public IActionResult SaveEdit(EmployeeWithDEptListViewModel EmpFromReq)
-        //public IActionResult SaveEdit(Employee EmpFromReq)
-        //public IActionResult SaveEdit(int id,string name,string email,...)
         {
             
-            if(EmpFromReq.Name!=null && EmpFromReq.Salary > 7000)
+            if(EmpFromReq.Name!=null && EmpFromReq.Salary > 8000)
             {
                 //get old ref
-                Employee EmpFromDb= context.Employees.FirstOrDefault(e=>e.Id==EmpFromReq.Id);
+                Employee EmpFromDb=
+                    context.Employees.FirstOrDefault(e=>e.Id==EmpFromReq.Id);
                 //Change Modify based on comming data from reqq
                 EmpFromDb.Name= EmpFromReq.Name;
                 EmpFromDb.Email= EmpFromReq.Email;

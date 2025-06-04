@@ -132,6 +132,7 @@ namespace DamWebApp.Controllers
 
         public IActionResult DetailsVM(int id)
         {
+            
             //collect ddata
             Employee empModel = context.Employees.FirstOrDefault(e => e.Id == id);
             string msg = "Hello";

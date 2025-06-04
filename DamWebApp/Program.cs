@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http;
+
 namespace DamWebApp
 {
     public class Program
@@ -10,24 +12,59 @@ namespace DamWebApp
             // Add services to the container.Day8
             builder.Services.AddControllersWithViews();
 
-            var app = builder.Build();
+            builder.Services.AddSession(option => {
+                option.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
 
-            // Configure the HTTP request pipeline. Day3
+
+
+            var app = builder.Build();
+            #region PipeLine using Cusotm Middlware
+            //Component
+            //inline Midddlware =>
+            //app.Use(async (httpContext, next) =>
+            //{
+            //    //httpContext.Request.route = "GET";
+            //    await httpContext.Response.WriteAsync("1) Middleware 1 \n");
+            //    await next.Invoke();//call next middlware
+            //    await httpContext.Response.WriteAsync("1-1) Middleware 1-1 \n");
+
+            //});
+
+            //app.Use(async(httpcontext, next) =>
+            //{
+            //    await httpcontext.Response.WriteAsync("2) Middleware 2 \n");
+            //    await next.Invoke();
+            //    await httpcontext.Response.WriteAsync("2-2) Middleware 2-2 \n");
+
+            //});
+
+            //app.Run(async (httpcontext) => {
+            //    await httpcontext.Response.WriteAsync("3) Terminate \n");
+            //});
+            #endregion
+
+
+            #region Configure the HTTP request pipeline.  using built in Middleware Day6
             if (!app.Environment.IsDevelopment())
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-            app.UseStaticFiles();
-
+            app.UseStaticFiles();//cant read from wwwroot
+            //Routing
             app.UseRouting();
+            
+            app.UseSession();
 
             app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+            #endregion
 
             app.Run();
         }
+        //name
     }
 }

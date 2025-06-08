@@ -1,4 +1,5 @@
 ﻿using DamWebApp.Models;
+using DamWebApp.Repository;
 using DamWebApp.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,11 +7,21 @@ namespace DamWebApp.Controllers
 {
     public class EmployeeController : Controller
     {
-        ITIContext context = new ITIContext();
+        //ITIContext context = new ITIContext();
+        //DIP + IOC
+        IEmployeeRepository EmpRepository=null;
+        IDepartmentRepository DeptRepository;
+        public EmployeeController(IEmployeeRepository empRepo, IDepartmentRepository depRepo)
+        {
+            this.EmpRepository=empRepo;
+            this.DeptRepository=depRepo;
+            //EmpRepository = new EmployeeRepository();//dont create
+            //DeptRepository= new DepartmentRepository();
+        }
 
         public IActionResult Index()
         {
-            List<Employee> EmpList= context.Employees.ToList();
+            List<Employee> EmpList= EmpRepository.GetAll();
             return View("Index",EmpList);
         }
 
@@ -25,7 +36,7 @@ namespace DamWebApp.Controllers
         public IActionResult New()//oprn view
         {
             //declare ViewModel (fill Lists)
-            ViewBag.DeptList = context.Departments.ToList();//convert to IEnumerable<selectListITem>
+            ViewBag.DeptList = DeptRepository.GetAll();//convert to IEnumerable<selectListITem>
             
             return View("New");
         }
@@ -38,8 +49,8 @@ namespace DamWebApp.Controllers
                 try
                 {
                     //mapping Employee emp=new Employee()
-                    context.Employees.Add(empFromReq);//Add
-                    context.SaveChanges();//throw exeption
+                    EmpRepository.Add(empFromReq);
+                    EmpRepository.Save();
                     return RedirectToAction("Index", "Employee");//end of Function
                 }catch(Exception ex)
                 {
@@ -49,7 +60,7 @@ namespace DamWebApp.Controllers
                 }
             }
 
-            ViewBag.DeptList = context.Departments.ToList();
+            ViewBag.DeptList = DeptRepository.GetAll();
             //empFromReq.DeptList= context.Departments.ToList();
             return View("New", empFromReq);
 
@@ -61,10 +72,10 @@ namespace DamWebApp.Controllers
         public IActionResult Edit(int id)//open form 100% MEthod Get
         {
             //Collect dta
-            Employee empFromDB= context.Employees.FirstOrDefault(e=>e.Id == id);
+            Employee empFromDB = EmpRepository.GetById(id);
             if (empFromDB != null)
             {
-                List<Department> DeptList1 = context.Departments.ToList();
+                List<Department> DeptList1 = DeptRepository.GetAll();
                 //ddecalare vM
                 EmployeeWithDEptListViewModel empVM = new();
                 //Mapping
@@ -88,21 +99,23 @@ namespace DamWebApp.Controllers
             if(EmpFromReq.Name!=null && EmpFromReq.Salary > 8000)
             {
                 //get old ref
-                Employee EmpFromDb=
-                    context.Employees.FirstOrDefault(e=>e.Id==EmpFromReq.Id);
+                Employee EmpFromDb =
+                    new Employee();
                 //Change Modify based on comming data from reqq
+                EmpFromDb.Id= EmpFromReq.Id;
                 EmpFromDb.Name= EmpFromReq.Name;
                 EmpFromDb.Email= EmpFromReq.Email;
                 EmpFromDb.Salary= EmpFromReq.Salary;
                 EmpFromDb.DepartmentId= EmpFromReq.DepartmentId;
                 EmpFromDb.ImageURL= EmpFromReq.ImageURL;
+                EmpRepository.Update(EmpFromDb);
                 //Save chage
-                context.SaveChanges();
+                EmpRepository.Save();
                 //return index
                 return RedirectToAction("Index", "Employee");
             }
            
-            EmpFromReq.DeptList = context.Departments.ToList();//refill
+            EmpFromReq.DeptList = DeptRepository.GetAll();//refill
             return View("Edit", EmpFromReq);
         }
 
@@ -126,15 +139,15 @@ namespace DamWebApp.Controllers
             //new entry ,throw exception ,override
 
             //-------------------------------------
-            Employee emp= context.Employees.FirstOrDefault(e=>e.Id==id);
+            Employee emp= EmpRepository.GetById(id);
             return View("Details",emp);//Model ==> Employee
         }
 
         public IActionResult DetailsVM(int id)
         {
-            
+
             //collect ddata
-            Employee empModel = context.Employees.FirstOrDefault(e => e.Id == id);
+            Employee empModel = EmpRepository.GetById(id);
             string msg = "Hello";
             int Temp = 39;
             List<string> branches = new() { "Alex", "Smart", "New Capital", "Sohag" };

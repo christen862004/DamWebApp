@@ -1,19 +1,23 @@
 ﻿using DamWebApp.Models;
+using DamWebApp.Repository;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DamWebApp.Controllers
 {
     public class DepartmentController : Controller
     {
-        ITIContext context = new ITIContext();
-        public DepartmentController()
+
+        //ITIContext context = new ITIContext();
+        IDepartmentRepository DeptRepository;//=new DepartmentRepository();
+        public DepartmentController(IDepartmentRepository deptRepo)
         {
-            
+            DeptRepository = deptRepo;
+            //DeptRepository = new DepartmentRepository();//dont create but ask 
         }
 
         public IActionResult Index()
         {
-            List<Department> DeptModel= context.Departments.ToList();
+            List<Department> DeptModel = DeptRepository.GetAll();
             return View("Index",DeptModel);//ViewName="Index" ,Model==> List<department>
         }
 
@@ -34,8 +38,8 @@ namespace DamWebApp.Controllers
             //{
             if (DeptFromReq.Name != null && DeptFromReq.ManagerName != null)
             {
-                context.Departments.Add(DeptFromReq);
-                context.SaveChanges();
+                DeptRepository.Add(DeptFromReq);
+                DeptRepository.Save();
 
                 return RedirectToAction("Index", "Department");
             }

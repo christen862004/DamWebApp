@@ -1,3 +1,4 @@
+using DamWebApp.Repository;
 using Microsoft.AspNetCore.Http;
 
 namespace DamWebApp
@@ -10,12 +11,16 @@ namespace DamWebApp
             //Builder with default web appication setting
 
             // Add services to the container.Day8
+            //Built in Service , already register
+            //Built in service , need to register
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddSession(option => {
                 option.IdleTimeout = TimeSpan.FromMinutes(30);
             });
-
+            //Custom Service need to define and register
+            builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();//register
+            builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 
 
             var app = builder.Build();

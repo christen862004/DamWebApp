@@ -11,12 +11,19 @@ namespace DamWebApp.Models
         //Server NAme  .
         //Authan.
         //dataBase name
-        public ITIContext():base()
+        //public ITIContext():base()
+        //{
+        //}
+        //inject DbCotextOption
+        public ITIContext(DbContextOptions<ITIContext> options) : base(options)
         {
+
         }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=.;Initial Catalog=D3M;Integrated Security=True;Encrypt=False");
+            optionsBuilder
+                .UseSqlServer("Data Source=.;Initial Catalog=D3M;Integrated Security=True;Encrypt=False");
             base.OnConfiguring(optionsBuilder);
         }
     }

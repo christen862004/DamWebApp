@@ -7,9 +7,10 @@ namespace DamWebApp.Repository
     {
         //CRUD : Create  - Read - Update - Delete
         ITIContext context;
-        public DepartmentRepository()
+        public DepartmentRepository(ITIContext _context)//dont create but ask (inject)
         {
-            context=new ITIContext();
+            context = _context;
+           // context=new ITIContext();
         }
         public void Add(Department entity)
         {

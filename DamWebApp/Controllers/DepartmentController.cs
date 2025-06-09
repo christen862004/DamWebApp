@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace DamWebApp.Controllers
 {
+    
     public class DepartmentController : Controller
     {
 
@@ -18,7 +19,8 @@ namespace DamWebApp.Controllers
         public IActionResult Index()
         {
             List<Department> DeptModel = DeptRepository.GetAll();
-            return View("Index",DeptModel);//ViewName="Index" ,Model==> List<department>
+            return View("Index", DeptModel);//ViewName="Index" ,Model==> List<department>
+            
         }
 
         public IActionResult New()
@@ -27,6 +29,7 @@ namespace DamWebApp.Controllers
         }
         ///Department/SaveNew?Name=val&ManagerName=value
         [HttpPost]
+        
         public IActionResult SaveNew(Department DeptFromReq)//string name,string managerName)
         {
             #region done by Model Binder

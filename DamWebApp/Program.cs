@@ -1,5 +1,9 @@
+using DamWebApp.Filtters;
+using DamWebApp.Models;
 using DamWebApp.Repository;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace DamWebApp
 {
@@ -13,14 +17,21 @@ namespace DamWebApp
             // Add services to the container.Day8
             //Built in Service , already register
             //Built in service , need to register
+            //builder.Services.AddControllersWithViews(
+            //    options =>options.Filters.Add(new HandelErrorAttribute()));
             builder.Services.AddControllersWithViews();
-
             builder.Services.AddSession(option => {
                 option.IdleTimeout = TimeSpan.FromMinutes(30);
             });
+            //Register DbContextOption ,ITIContext
+            builder.Services.AddDbContext<ITIContext>(optionBuilder => {
+                optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("cs"));
+            });
+
             //Custom Service need to define and register
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();//register
             builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
+            builder.Services.AddScoped<ITestService, TestService>();//most common 
 
 
             var app = builder.Build();
@@ -57,15 +68,34 @@ namespace DamWebApp
             }
             app.UseStaticFiles();//cant read from wwwroot
             //Routing
-            app.UseRouting();
+            app.UseRouting(); //Security "Mapping"
             
             app.UseSession();
 
             app.UseAuthorization();
+            #region Custom Route
+            //NAming Converntion Route
+            //app.MapControllerRoute("route1", "r1/{age:int:range(20,60)}/{name?}",
+            //    new {controller="Route",action="Method1" });
+            //r1/11/hamed  req.routeValue {cnotoller=roue,action="Method1" ,age=11.name=hamed}
 
+            //app.MapControllerRoute("route1", "r1",
+            //    new { controller = "Route", action = "Method1" });
+
+            //app.MapControllerRoute("route2", "r2",
+            //    new { controller="Route",action="Method2"});
+
+            #endregion
+
+            //Route for each controller
+
+            //app.MapControllerRoute("Route1", "{controller=Employee}/{action=Index}/{id?}");
+
+
+            //Default URl
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Home}/{action=Index}/{id?}");
+                pattern: "{controller=Home}/{action=Index}/{id?}");// decalre Route Template ,execute
             #endregion
 
             app.Run();

@@ -11,7 +11,8 @@ namespace DamWebApp.Models
             Employee EmpFromReq=(Employee) validationContext.ObjectInstance;
             //email false | true
             string email = value.ToString();
-            ITIContext context = new ITIContext();
+            //ITIContext context = new ITIContext();create
+            ITIContext context = validationContext.GetService<ITIContext>();//ask server provider for ITIContext
             //check with email before
             Employee empFromDb = context.Employees
                 .FirstOrDefault(e => e.Email == email && e.DepartmentId == EmpFromReq.DepartmentId);

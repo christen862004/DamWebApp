@@ -6,9 +6,10 @@ namespace DamWebApp.Repository
     {
         //CRUD : Create  - Read - Update - Delete
         ITIContext context;
-        public EmployeeRepository()
+        public EmployeeRepository(ITIContext _context)
         {
-            context = new ITIContext();
+            context= _context;
+            //context = new ITIContext();//use default constructor
         }
 
         public void Add(Employee entity)

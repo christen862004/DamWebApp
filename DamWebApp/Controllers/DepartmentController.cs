@@ -1,5 +1,6 @@
 ﻿using DamWebApp.Models;
 using DamWebApp.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DamWebApp.Controllers
@@ -15,7 +16,7 @@ namespace DamWebApp.Controllers
             DeptRepository = deptRepo;
             //DeptRepository = new DepartmentRepository();//dont create but ask 
         }
-
+        [Authorize]
         public IActionResult Index()
         {
             List<Department> DeptModel = DeptRepository.GetAll();

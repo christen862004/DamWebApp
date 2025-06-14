@@ -2,6 +2,7 @@ using DamWebApp.Filtters;
 using DamWebApp.Models;
 using DamWebApp.Repository;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,6 +28,32 @@ namespace DamWebApp
             builder.Services.AddDbContext<ITIContext>(optionBuilder => {
                 optionBuilder.UseSqlServer(builder.Configuration.GetConnectionString("cs"));
             });
+            builder.Services.AddIdentity<AppLicationUser, IdentityRole>(
+                options =>
+                {
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireDigit = false;
+                    options.Password.RequiredLength = 4;
+                })
+                .AddEntityFrameworkStores<ITIContext>();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             //Custom Service need to define and register
             builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();//register
